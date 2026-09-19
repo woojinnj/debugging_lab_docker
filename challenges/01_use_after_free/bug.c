@@ -133,6 +133,9 @@ static void screen_dispatch(Screen *s, int code)
     for (int i = 0; i < s->count; i++)
     {
         Widget *w = s->items[i];
+
+        if (w == NULL) //추가한부분
+            continue;  //추가한부분
         w->vtbl->on_event(w, code);
     }
 }
@@ -142,7 +145,11 @@ static void screen_render(Screen *s)
     for (int i = 0; i < s->count; i++)
     {
         Widget *w = s->items[i];
-        w->vtbl->render(w); // 오류
+
+        if (w == NULL) //추가한부분
+            continue;  //추가한부분
+
+        w->vtbl->render(w);
     }
 }
 
@@ -151,7 +158,7 @@ static void dialog_on_event(Widget *self, int code)
     if (code == 1)
     {
         self->closed = 1;
-        widget_destroy(self);
+        // widget_destroy(self);
     }
 }
 
@@ -183,7 +190,13 @@ int main(void)
     printf("frame 1:\n");
     screen_render(&s);
     screen_dispatch(&s, 1);
-
+    for (int i=0;i<s.count;i++){
+        Widget *w=s.items[i];
+        if(w!=NULL && w->closed){
+            widget_destroy(w);
+            s.items[i]=NULL;
+        }
+    }
     /* TODO 닫힌(closed) 위젯을 여기서 정리(free + 해당 슬롯 NULL)할 필요가 있음 */
 
     char *status = app_build_status("dialog closed");

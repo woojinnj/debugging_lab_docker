@@ -54,10 +54,10 @@ static void parse_headers(char *text, Headers *h)
     {
         char *colon = strchr(line, ':');
         // H O S T : G O O G L E
-        if (colon == NULL)
-        {
-            continue;
-        }
+        // if (colon == NULL)
+        // {
+        //     continue;
+        // }
         *colon = '\0';
         char *key = line;
         char *val = skip_ws(colon + 1);
